@@ -103,6 +103,20 @@ router.post('/add-wishList/:token', async (req, res) => {
   res.json({ saveUserWishList });
 });
 
+// Delete Wishlist
+router.delete('/delete-wishList/:token/:idArticle', async (req, res) => {
+
+  const tokenUser = req.params.token;
+  const user = await userModel.findOne({ token: tokenUser });
+  const wishListUser = user.wishList;
+
+  const removedwishList = await wishListUser.remove({_id: req.params.idArticle});
+  await user.save();
+
+  
+  res.json({ removedwishList });
+});
+
 /** Get WishList By User */
 router.get('/wishList/:token', async (req, res) => {
   const tokenUser = req.params.token;

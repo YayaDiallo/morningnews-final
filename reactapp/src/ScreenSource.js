@@ -52,7 +52,7 @@ function ScreenSource({ onHandleFlag, flag }) {
           size={64}
           style={flagStyles}
           src='/images/uk.png'
-          onClick={() => onHandleFlag('en', 'us')}
+          onClick={() => onHandleFlag('en', 'gb')}
         />
       </div>
 

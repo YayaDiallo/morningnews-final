@@ -6,7 +6,7 @@ import Nav from './Nav';
 
 const { Meta } = Card;
 
-function ScreenMyArticles({ deleteToWishList, token }) {
+function ScreenMyArticles({ token }) {
 
   const [myArticles, setMyArticles] = useState([]);
 
@@ -19,6 +19,18 @@ function ScreenMyArticles({ deleteToWishList, token }) {
     };
   databaseResultsLoading();
   },[token])
+
+  const deleteArticle = async (idArticle) => {
+   
+    const data = await fetch(`/delete-wishList/${token}/${idArticle}`, {
+      method: 'DELETE',
+      
+    }
+    );
+    
+    const body = await data.json();
+    setMyArticles(body.removedwishList)
+  }
 
   return (
     <div>
@@ -51,7 +63,7 @@ function ScreenMyArticles({ deleteToWishList, token }) {
                   <Icon
                     type='delete'
                     key='ellipsis'
-                    onClick={() => deleteToWishList(article.title)}
+                    onClick={() => deleteArticle(article._id)}
                   />,
                 ]}
               >
