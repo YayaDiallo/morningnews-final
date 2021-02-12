@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import './App.css';
 import { Card, Icon, Alert } from 'antd';
@@ -6,12 +6,25 @@ import Nav from './Nav';
 
 const { Meta } = Card;
 
-function ScreenMyArticles({ wishList, deleteToWishList }) {
+function ScreenMyArticles({ deleteToWishList, token }) {
+
+  const [myArticles, setMyArticles] = useState([]);
+
+
+  useEffect(() => {
+    const databaseResultsLoading = async () => {
+      const data = await fetch(`/wishList/${token}`);
+      const body = await data.json();
+      setMyArticles(body.wishListUser)
+    };
+  databaseResultsLoading();
+  },[token])
+
   return (
     <div>
       <Nav />
       <div className='Banner' />
-      {wishList.length < 1 ? (
+      {myArticles.length < 1 ? (
         <Alert
           style={{ marginTop: '5px', textAlign: 'center' }}
           message={<h1>No Articles in Wish List</h1>}
@@ -19,7 +32,7 @@ function ScreenMyArticles({ wishList, deleteToWishList }) {
         />
       ) : (
         <div className='Card'>
-          {wishList.map((article, index) => (
+          {myArticles.map((article, index) => (
             <div
               key={index}
               style={{ display: 'flex', justifyContent: 'center' }}
@@ -52,8 +65,8 @@ function ScreenMyArticles({ wishList, deleteToWishList }) {
   );
 }
 
-const mapStateToProps = (wishList) => {
-  return wishList;
+const mapStateToProps = state => {
+  return {token: state.token}
 };
 
 const mapDispatchToProps = (dispatch) => {

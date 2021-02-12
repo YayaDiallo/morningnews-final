@@ -8,7 +8,8 @@ import Spinner from './components/layout/Spinner';
 
 const { Meta } = Card;
 
-function ScreenArticlesBySource({ addToWishList }) {
+function ScreenArticlesBySource({ addToWishList, token }) {
+
   const { id } = useParams();
 
   const [loading, setLoading] = useState(false);
@@ -31,6 +32,17 @@ function ScreenArticlesBySource({ addToWishList }) {
 
     findArticles();
   }, [id]);
+
+  const addToDatabase = async (article) => {
+   
+    const data = await fetch(`/add-wishList/${token}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `titleFromFront=${article.title}&descriptionFromFront=${article.description}&contentFromFront=${article.content}&urlFromFront=${article.urlToImage}`,
+    });
+    const body = await data.json();
+    console.log(body)
+  }
 
   const showModal = (title, content) => {
     setVisible(true);
@@ -76,14 +88,14 @@ function ScreenArticlesBySource({ addToWishList }) {
                 <Icon
                   type='like'
                   key='ellipsis'
-                  onClick={() =>
+                  onClick={() =>{
                     addToWishList(
                       article.title,
                       article.description,
                       article.content,
                       article.urlToImage
-                    )
-                  }
+                    ); addToDatabase(article) 
+                  }}
                 />,
               ]}
             >
@@ -104,6 +116,10 @@ function ScreenArticlesBySource({ addToWishList }) {
   );
 }
 
+const mapStateToProps = state => {
+  return { token:state.token };
+}
+
 const mapDispatchToProps = (dispatch) => {
   return {
     addToWishList: (title, description, content, url) => {
@@ -115,4 +131,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(ScreenArticlesBySource);
+export default connect(mapStateToProps, mapDispatchToProps)(ScreenArticlesBySource);
