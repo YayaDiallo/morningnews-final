@@ -6,8 +6,8 @@ import { List, Avatar } from 'antd';
 import Nav from './Nav';
 import Spinner from './components/layout/Spinner';
 
-function ScreenSource({ onHandleFlag, flag }) {
-  const { lang, cnty } = flag;
+function ScreenSource({ onHandleFlag, flag, token }) {
+  const { cnty } = flag;
 
   const [loading, setLoading] = useState(false);
   const [sourceList, setSourceList] = useState([]);
@@ -16,7 +16,7 @@ function ScreenSource({ onHandleFlag, flag }) {
     setLoading(true);
     const APIResultsLoading = async () => {
       const data = await fetch(
-        `https://newsapi.org/v2/sources?language=${lang}&country=${cnty}&apiKey=f4ca1120bfaa403ab776b990f7e96bee`
+        `https://newsapi.org/v2/sources?country=${cnty}&apiKey=f4ca1120bfaa403ab776b990f7e96bee`
       );
       const body = await data.json();
       setSourceList(body.sources);
@@ -24,14 +24,31 @@ function ScreenSource({ onHandleFlag, flag }) {
     };
 
     APIResultsLoading();
-  }, [lang, cnty]);
+  }, [cnty]);
+
+  const changeCountry = async (country) => {
+    const data = await fetch(`/choose-country/${token}/${country}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `country=${country}`,
+    });
+    const body = await data.json();
+  };
 
   // Styles
+
+  //  let bordure = cnty;
+  //  if (cnty === 'fr') {
+  //    bordure = { border: '3px solid #eeeee' }
+  //  }
+
   const flagStyles = {
     marginRight: '5px',
     cursor: 'pointer',
-    border: '3px solid #eee',
+    border: cnty === 'fr' ? '3px solid #eeeee' : '',
   };
+
+  console.log(flagStyles);
 
   // Spinner
   if (loading) {
@@ -47,13 +64,19 @@ function ScreenSource({ onHandleFlag, flag }) {
           size={64}
           style={flagStyles}
           src='/images/france.jpg'
-          onClick={() => onHandleFlag('fr', 'fr')}
+          onClick={() => {
+            onHandleFlag('fr');
+            changeCountry('fr');
+          }}
         />
         <Avatar
           size={64}
           style={flagStyles}
           src='/images/uk.png'
-          onClick={() => onHandleFlag('en', 'gb')}
+          onClick={() => {
+            onHandleFlag('gb');
+            changeCountry('gb');
+          }}
         />
       </div>
 
@@ -80,14 +103,14 @@ function ScreenSource({ onHandleFlag, flag }) {
   );
 }
 
-const mapStateToProps = (flag) => {
-  return flag;
+const mapStateToProps = (state) => {
+  return { token: state.token, flag: state.flag };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onHandleFlag: (lang, cnty) => {
-      dispatch({ type: 'changeFlag', payload: { lang, cnty } });
+    onHandleFlag: (cnty) => {
+      dispatch({ type: 'changeFlag', payload: { cnty } });
     },
   };
 };

@@ -20,9 +20,14 @@ function ScreenMyArticles({ token }) {
 
   const deleteArticle = async (idArticle) => {
     const data = await fetch(`/delete-wishList/${token}/${idArticle}`, {
+<<<<<<< HEAD
       method: 'DELETE',
     });
 
+=======
+      method: 'DELETE',  
+    });
+>>>>>>> c7c3519ea7d0b0dcf7fe0f16478e520858003815
     const body = await data.json();
     setMyArticles(body.removedwishList);
   };
