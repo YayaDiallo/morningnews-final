@@ -87,9 +87,8 @@ router.get('/user-list', async (req, res) => {
 /** WishLists */
 router.post('/add-wishList/:token', async (req, res) => {
   // 1. Chercher le user en fonction du token
-  let tokenUser = req.params.token;
+  const tokenUser = req.params.token;
   const user = await userModel.findOne({ token: tokenUser });
-  console.log(user);
 
   // 2. Pusher l'article dans le sous document wishList
   user.wishList.push({
@@ -104,12 +103,13 @@ router.post('/add-wishList/:token', async (req, res) => {
   res.json({ saveUserWishList });
 });
 
-/** WishList By User */
-router.get('/my-articles/:id', async (req, res) => {
-  // const { id } = req.params;
-  // const wishListByUser = await wishListModel.findById(id).populate('wishLists');
-  // res.json(wishListByUser);
-  // res.json(myArticles);
+/** Get WishList By User */
+router.get('/wishList/:token', async (req, res) => {
+  const tokenUser = req.params.token;
+  const user = await userModel.findOne({ token: tokenUser });
+  const wishListUser = user.wishList;
+
+  res.json({ wishListUser });
 });
 
 module.exports = router;
