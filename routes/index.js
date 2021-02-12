@@ -32,6 +32,7 @@ router.post('/sign-up', async function (req, res, next) {
   let token = '';
   if (error.length == 0) {
     let newUser = new userModel({
+      wishList: [],
       username: req.body.usernameFromFront,
       email: req.body.emailFromFront,
       password: hashedPassword,
@@ -84,25 +85,23 @@ router.get('/user-list', async (req, res) => {
 });
 
 /** WishLists */
-router.post('/add-wishList/:id', async (req, res) => {
-  // let idUser = req.params.id;
-  // try {
-  //   let newWishList = new wishListModel({
-  //     title: req.body.title,
-  //     description: req.body.description,
-  //     content: req.body.content,
-  //     url: req.body.url,
-  //     user: idUser,
-  //   });
-  //   await newWishList.save();
-  //   const userById = await userModel.findById(idUser);
-  //   userById.wishList.push(newWishList);
-  //   await userById.save();
-  //   // return res.send(userById);
-  //   res.json({ userById });
-  // } catch (error) {
-  //   res.json({ error });
-  // }
+router.post('/add-wishList/:token', async (req, res) => {
+  // 1. Chercher le user en fonction du token
+  let tokenUser = req.params.token;
+  const user = await userModel.findOne({ token: tokenUser });
+  console.log(user);
+
+  // 2. Pusher l'article dans le sous document wishList
+  user.wishList.push({
+    title: req.body.titleFromFront,
+    description: req.body.descriptionFromFront,
+    content: req.body.contentFromFront,
+    url: req.body.urlFromFront,
+  });
+
+  // 3. Enregistrer le user avec sa wishList
+  const saveUserWishList = await user.save();
+  res.json({ saveUserWishList });
 });
 
 /** WishList By User */
