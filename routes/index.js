@@ -126,4 +126,17 @@ router.get('/wishList/:token', async (req, res) => {
   res.json({ wishListUser });
 });
 
+// Gestion du pays
+router.put('/choose-country/:token/:country', async (req, res) => {
+
+
+  const newCountry = await userModel.updateOne(
+    {token: req.params.token},
+    {$set: {country: req.params.country}}
+  );
+
+
+  res.json({ newCountry });
+});
+
 module.exports = router;

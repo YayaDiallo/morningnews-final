@@ -23,11 +23,8 @@ function ScreenMyArticles({ token }) {
   const deleteArticle = async (idArticle) => {
    
     const data = await fetch(`/delete-wishList/${token}/${idArticle}`, {
-      method: 'DELETE',
-      
-    }
-    );
-    
+      method: 'DELETE',  
+    });
     const body = await data.json();
     setMyArticles(body.removedwishList)
   }
