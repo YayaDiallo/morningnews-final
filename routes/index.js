@@ -80,7 +80,7 @@ router.post('/sign-in', async function (req, res, next) {
 
 /** Find User List */
 router.get('/user-list', async (req, res) => {
-  const users = await userModel.find();
+  const users = await userModel.findById(req.params.id);
   res.json({ users });
 });
 
@@ -105,15 +105,15 @@ router.post('/add-wishList/:token', async (req, res) => {
 
 // Delete Wishlist
 router.delete('/delete-wishList/:token/:idArticle', async (req, res) => {
-
   const tokenUser = req.params.token;
   const user = await userModel.findOne({ token: tokenUser });
   const wishListUser = user.wishList;
 
-  const removedwishList = await wishListUser.remove({_id: req.params.idArticle});
+  const removedwishList = await wishListUser.remove({
+    _id: req.params.idArticle,
+  });
   await user.save();
 
-  
   res.json({ removedwishList });
 });
 

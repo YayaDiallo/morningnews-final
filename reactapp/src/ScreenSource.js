@@ -30,6 +30,7 @@ function ScreenSource({ onHandleFlag, flag }) {
   const flagStyles = {
     marginRight: '5px',
     cursor: 'pointer',
+    border: '3px solid #eee',
   };
 
   // Spinner

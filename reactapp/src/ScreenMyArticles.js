@@ -7,30 +7,25 @@ import Nav from './Nav';
 const { Meta } = Card;
 
 function ScreenMyArticles({ token }) {
-
   const [myArticles, setMyArticles] = useState([]);
-
 
   useEffect(() => {
     const databaseResultsLoading = async () => {
       const data = await fetch(`/wishList/${token}`);
       const body = await data.json();
-      setMyArticles(body.wishListUser)
+      setMyArticles(body.wishListUser);
     };
-  databaseResultsLoading();
-  },[token])
+    databaseResultsLoading();
+  }, [token]);
 
   const deleteArticle = async (idArticle) => {
-   
     const data = await fetch(`/delete-wishList/${token}/${idArticle}`, {
       method: 'DELETE',
-      
-    }
-    );
-    
+    });
+
     const body = await data.json();
-    setMyArticles(body.removedwishList)
-  }
+    setMyArticles(body.removedwishList);
+  };
 
   return (
     <div>
@@ -77,8 +72,8 @@ function ScreenMyArticles({ token }) {
   );
 }
 
-const mapStateToProps = state => {
-  return {token: state.token}
+const mapStateToProps = (state) => {
+  return { token: state.token };
 };
 
 const mapDispatchToProps = (dispatch) => {
