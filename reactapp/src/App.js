@@ -9,12 +9,13 @@ import ScreenSource from './ScreenSource';
 import wishList from './reducers/wishList.reducer';
 import token from './reducers/token.reducer';
 import flag from './reducers/flag.reducer';
+import lang from './reducers/lang.reducer';
 
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 
 const store = createStore(
-  combineReducers({ wishList, token, flag }),
+  combineReducers({ wishList, token, flag, lang }),
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import './App.css';
-import { Card, Icon, Alert } from 'antd';
+import { Card, Icon, Alert, Avatar } from 'antd';
 import Nav from './Nav';
 
 const { Meta } = Card;
@@ -20,22 +20,38 @@ function ScreenMyArticles({ token }) {
 
   const deleteArticle = async (idArticle) => {
     const data = await fetch(`/delete-wishList/${token}/${idArticle}`, {
-<<<<<<< HEAD
       method: 'DELETE',
     });
-
-=======
-      method: 'DELETE',  
-    });
->>>>>>> c7c3519ea7d0b0dcf7fe0f16478e520858003815
     const body = await data.json();
     setMyArticles(body.removedwishList);
+  };
+
+  const filterLangFr = (lang) => {
+    setMyArticles(myArticles.filter((item) => item.lang === lang));
+  };
+
+  const filterLangEn = (lang) => {
+    console.log(myArticles, lang);
+    setMyArticles(myArticles.filter((item) => item.lang === lang));
   };
 
   return (
     <div>
       <Nav />
-      <div className='Banner' />
+
+      <div className='Banner'>
+        <Avatar
+          size={64}
+          src='/images/france.jpg'
+          onClick={() => filterLangFr('fr')}
+        />
+        <Avatar
+          size={64}
+          src='/images/uk.png'
+          onClick={() => filterLangEn('en')}
+        />
+      </div>
+
       {myArticles.length < 1 ? (
         <Alert
           style={{ marginTop: '5px', textAlign: 'center' }}

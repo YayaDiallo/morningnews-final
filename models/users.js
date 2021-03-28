@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const wishListSchema = mongoose.Schema(
   {
+    lang: String,
     title: String,
     description: String,
     content: String,
@@ -16,7 +17,7 @@ const userSchema = mongoose.Schema(
     username: String,
     email: String,
     password: String,
-    country: String,
+    country: { type: String, default: 'fr' },
     token: String,
   },
   {

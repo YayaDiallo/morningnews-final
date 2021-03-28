@@ -8,8 +8,7 @@ import Spinner from './components/layout/Spinner';
 
 const { Meta } = Card;
 
-function ScreenArticlesBySource({ addToWishList, token }) {
-
+function ScreenArticlesBySource({ addToWishList, token, lang }) {
   const { id } = useParams();
 
   const [loading, setLoading] = useState(false);
@@ -22,9 +21,10 @@ function ScreenArticlesBySource({ addToWishList, token }) {
     setLoading(true);
     const findArticles = async () => {
       const data = await fetch(
-        `https://newsapi.org/v2/top-headlines?sources=${id}&apiKey=f4ca1120bfaa403ab776b990f7e96bee`
+        `https://newsapi.org/v2/top-headlines?sources=${id}&apiKey=${process.env.REACT_APP_NEWSAPI_SECRET_KEY}`
       );
       const body = await data.json();
+      console.log(body);
 
       setArticleList(body.articles);
       setLoading(false);
@@ -34,15 +34,14 @@ function ScreenArticlesBySource({ addToWishList, token }) {
   }, [id]);
 
   const addToDatabase = async (article) => {
-   
     const data = await fetch(`/add-wishList/${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `titleFromFront=${article.title}&descriptionFromFront=${article.description}&contentFromFront=${article.content}&urlFromFront=${article.urlToImage}`,
+      body: `langFromFront=${lang}&titleFromFront=${article.title}&descriptionFromFront=${article.description}&contentFromFront=${article.content}&urlFromFront=${article.urlToImage}`,
     });
     const body = await data.json();
-    console.log(body)
-  }
+    console.log(body);
+  };
 
   const showModal = (title, content) => {
     setVisible(true);
@@ -88,13 +87,14 @@ function ScreenArticlesBySource({ addToWishList, token }) {
                 <Icon
                   type='like'
                   key='ellipsis'
-                  onClick={() =>{
+                  onClick={() => {
                     addToWishList(
                       article.title,
                       article.description,
                       article.content,
                       article.urlToImage
-                    ); addToDatabase(article) 
+                    );
+                    addToDatabase(article);
                   }}
                 />,
               ]}
@@ -116,9 +116,9 @@ function ScreenArticlesBySource({ addToWishList, token }) {
   );
 }
 
-const mapStateToProps = state => {
-  return { token:state.token };
-}
+const mapStateToProps = (state) => {
+  return { token: state.token, lang: state.lang };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -131,4 +131,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScreenArticlesBySource);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ScreenArticlesBySource);

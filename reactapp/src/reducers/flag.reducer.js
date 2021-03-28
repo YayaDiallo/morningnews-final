@@ -1,4 +1,4 @@
-export default function (flag = { cnty: 'fr' }, action) {
+export default function (flag = 'fr', action) {
   if (action.type === 'changeFlag') {
     let newFlag = action.payload;
     return newFlag;

@@ -80,7 +80,7 @@ router.post('/sign-in', async function (req, res, next) {
 
 /** Find User List */
 router.get('/user-list', async (req, res) => {
-  const users = await userModel.findById(req.params.id);
+  const users = await userModel.find();
   res.json({ users });
 });
 
@@ -90,15 +90,24 @@ router.post('/add-wishList/:token', async (req, res) => {
   const tokenUser = req.params.token;
   const user = await userModel.findOne({ token: tokenUser });
 
-  // 2. Pusher l'article dans le sous document wishList
+  // 2. Vérifier si l'article existe
+  const wishListUser = user.wishList;
+  const articleExist = wishListUser.filter(
+    (article) => article.title === req.body.titleFromFront
+  );
+
+  if (articleExist.length > 0) return wishListUser;
+
+  // 3. Pusher l'article dans le sous document wishList
   user.wishList.push({
+    lang: req.body.langFromFront,
     title: req.body.titleFromFront,
     description: req.body.descriptionFromFront,
     content: req.body.contentFromFront,
     url: req.body.urlFromFront,
   });
 
-  // 3. Enregistrer le user avec sa wishList
+  // 4. Enregistrer le user avec sa wishList
   const saveUserWishList = await user.save();
   res.json({ saveUserWishList });
 });
@@ -128,13 +137,10 @@ router.get('/wishList/:token', async (req, res) => {
 
 // Gestion du pays
 router.put('/choose-country/:token/:country', async (req, res) => {
-
-
   const newCountry = await userModel.updateOne(
-    {token: req.params.token},
-    {$set: {country: req.params.country}}
+    { token: req.params.token },
+    { country: req.params.country }
   );
-
 
   res.json({ newCountry });
 });
